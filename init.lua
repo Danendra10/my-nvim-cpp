@@ -23,6 +23,15 @@ require("lazy").setup({
   },
 
   { import = "plugins" },
+  {
+    "tpope/vim-commentary",
+    event = "VeryLazy"
+  },
+  {
+    "mg979/vim-visual-multi",
+    branch = "master",
+    event = "VeryLazy"  -- Load when required
+  },
 }, lazy_config)
 
 -- load theme
@@ -31,6 +40,15 @@ dofile(vim.g.base46_cache .. "statusline")
 vim.opt.shell = "/bin/bash"
 require "options"
 require "nvchad.autocmds"
+
+vim.g.VM_maps = {
+  ["Find Under"] = "<C-m>",  -- Replace <C-m> with your preferred key
+}
+
+-- Enable relative line numbers
+vim.opt.relativenumber = true
+-- Show absolute number on the current line
+vim.opt.number = true
 
 vim.cmd [[
   highlight Normal guibg=none

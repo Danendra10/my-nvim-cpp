@@ -71,5 +71,54 @@ return {
     'wakatime/vim-wakatime', 
     lazy = false 
   },
-}
+  {
+    'OscarCreator/rsync.nvim',
+    build = 'make',
+    dependencies = 'nvim-lua/plenary.nvim',
+    config = function()
+        require("rsync").setup()
+    end,
+    shell ='/bin/bash',
+  },
+  
+  -- Clang Format
+  {
+    "nvimtools/none-ls.nvim",
+    config = function()
+      local null_ls = require("null-ls")
 
+      null_ls.setup({
+        debug = true,
+        sources = {
+          null_ls.builtins.formatting.stylua,
+          null_ls.builtins.diagnostics.clang_tidy,
+          null_ls.builtins.formatting.clang_format.with({
+            extra_args = { "--style=file" },
+          }),
+        },
+        on_attach = function(client, bufnr)
+          if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_buf_set_option(bufnr, "formatexpr", "v:lua.vim.lsp.formatexpr()")
+          end
+        end,
+      })
+
+      -- Set the keybinding globally
+      vim.keymap.set("n", "<leader>cf", function()
+        vim.lsp.buf.format({ async = true }) -- Ensure async formatting
+      end, { desc = "Format Code (null-ls)" })
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    config = function()
+      require("configs.conform")
+    end,
+    opts = {
+      formatters_by_ft = {
+        c = { "clang_format" },
+        cpp = { "clang_format" },
+      },
+    },
+  },
+}
